@@ -3,8 +3,8 @@ using UnityEngine.UI;
 
 public class MessageCanvas : MonoBehaviour
 {
-    [SerializeField] private RectTransform panel;
-    [SerializeField] private Text messageLabel;
+    [SerializeField] private RectTransform panel = null;
+    [SerializeField] private Text messageLabel = null;
 
     public void SetMessage(string message)
     {

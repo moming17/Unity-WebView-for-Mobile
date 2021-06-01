@@ -17,7 +17,7 @@ public class WebviewOptions
     public bool Transparent = false;
     public bool Zoom = false;
     public string UA = "";
-    public ColorMode AndroidForceDarkMode = ColorMode.SystemSetting;
+    public ColorMode AndroidForceDarkMode = ColorMode.DarkModeOff;
     public bool EnableWKWebView = true;
     public WebkitContentMode WKContentMode = WebkitContentMode.Recommended;
 }

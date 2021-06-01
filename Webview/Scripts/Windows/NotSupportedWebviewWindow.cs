@@ -6,11 +6,12 @@ public class NotSupportedWebviewWindow : WebviewWindowBase
 
     public override void Init(WebviewOptions options = default)
     {
+        bool hasNetwork = Application.internetReachability != NetworkReachability.NotReachable;
+        string message = hasNetwork ? "Current platform\ndoes not support Webview." : "Network is not reachable.";
+
         MessageCanvas canvasPrefab = Resources.Load<MessageCanvas>("NotSupportedCanvas");
         messageCanvas = Instantiate(canvasPrefab);
-        messageCanvas.SetMessage("Current platform\ndoes not support Webview.");
-
-        Debug.LogWarning("Current platform does not support Webview.");
+        messageCanvas.SetMessage(message);
     }
 
     public override void SetMargins(int left, int top, int right, int bottom)

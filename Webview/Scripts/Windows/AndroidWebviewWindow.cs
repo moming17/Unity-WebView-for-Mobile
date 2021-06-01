@@ -13,16 +13,18 @@ public class AndroidWebViewWindow : WebviewWindowBase
             Permission.RequestUserPermission(Permission.Camera);
         }
 
-        webView = new AndroidJavaObject("net.gree.unitywebview.CWebViewPlugin");
+        webView = new AndroidJavaObject("io.wolf3d.webviewplugin.CWebViewPlugin");
         webView.Call("Init", name, options.Transparent, options.Zoom, (int)options.AndroidForceDarkMode, options.UA);
 
-        using AndroidJavaClass unityPlayer = new AndroidJavaClass("com.unity3d.player.UnityPlayer");
-        AndroidJavaObject currentActivity = unityPlayer.GetStatic<AndroidJavaObject>("currentActivity");
-        AndroidJavaObject view = currentActivity.Get<AndroidJavaObject>("mUnityPlayer").Call<AndroidJavaObject>("getView");
-        rectangle = new AndroidJavaObject("android.graphics.Rect");
+        using (AndroidJavaClass unityPlayer = new AndroidJavaClass("com.unity3d.player.UnityPlayer"))
+        {
+            AndroidJavaObject currentActivity = unityPlayer.GetStatic<AndroidJavaObject>("currentActivity");
+            AndroidJavaObject view = currentActivity.Get<AndroidJavaObject>("mUnityPlayer").Call<AndroidJavaObject>("getView");
+            rectangle = new AndroidJavaObject("android.graphics.Rect");
 
-        view.Call("getWindowVisibleDisplayFrame", rectangle);
-        windowVisibleDisplayFrameHeight = rectangle.Call<int>("height");
+            view.Call("getWindowVisibleDisplayFrame", rectangle);
+            windowVisibleDisplayFrameHeight = rectangle.Call<int>("height");
+        }
     }
 
     public override void SetMargins(int left, int top, int right, int bottom)

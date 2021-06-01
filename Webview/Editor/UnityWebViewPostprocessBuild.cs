@@ -75,7 +75,7 @@ public class UnityWebViewPostprocessBuild
             changed = (androidManifest.AddCamera() || changed);
             changed = (androidManifest.AddMicrophone() || changed);
 #if UNITY_5_6_0 || UNITY_5_6_1
-            changed = (androidManifest.SetActivityName("net.gree.unitywebview.CUnityPlayerActivity") || changed);
+            changed = (androidManifest.SetActivityName("io.wolf3d.webviewplugin.CUnityPlayerActivity") || changed);
 #endif
             if (changed) {
                 androidManifest.Save();

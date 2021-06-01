@@ -26,9 +26,11 @@ public class Webview
     {
         this.parent = parent;
 
-        SetWebviewWindow();
-        parent.StartCoroutine(LoadWebviewURL());
-        SetScreenPadding(left, top, right, bottom);
+        if (SetWebviewWindow())
+        {
+            parent.StartCoroutine(LoadWebviewURL());
+            SetScreenPadding(left, top, right, bottom);
+        }
     }
 
     /// <summary>
@@ -47,22 +49,41 @@ public class Webview
         }
     }
 
-    private void SetWebviewWindow()
+    public void SetVisible(bool visible)
     {
+        webViewObject.IsVisible = visible;
+    }
+
+    private bool SetWebviewWindow()
+    {
+        bool hasNetwork = Application.internetReachability != NetworkReachability.NotReachable;
+        bool supported = true;
+
         WebviewOptions options = new WebviewOptions();
 
-#if !UNITY_EDITOR && UNITY_ANDROID
-        webViewObject = parent.gameObject.AddComponent<AndroidWebViewWindow>();
-#elif !UNITY_EDITOR && UNITY_IOS
-        webViewObject = parent.gameObject.AddComponent<IOSWebViewWindow>();
-#else
-        webViewObject = parent.gameObject.AddComponent<NotSupportedWebviewWindow>();
-#endif
+        if (hasNetwork)
+        {
+        #if !UNITY_EDITOR && UNITY_ANDROID
+            webViewObject = parent.gameObject.AddComponent<AndroidWebViewWindow>();
+        #elif !UNITY_EDITOR && UNITY_IOS
+            webViewObject = parent.gameObject.AddComponent<IOSWebViewWindow>();
+        #else
+            webViewObject = parent.gameObject.AddComponent<NotSupportedWebviewWindow>();
+            supported = false;
+        #endif
+        }
+        else
+        {
+            webViewObject = parent.gameObject.AddComponent<NotSupportedWebviewWindow>();
+            supported = false;
+        }
+
         webViewObject.OnLoaded = OnLoaded;
         webViewObject.OnJS = OnWebMessageReceived;
 
         webViewObject.Init(options);
-        webViewObject.IsVisible = true;
+
+        return supported;
     }
 
     private IEnumerator LoadWebviewURL()
@@ -93,7 +114,7 @@ public class Webview
 
         if (message.Contains(".glb"))
         {
-            UnityEngine.Object.Destroy(webViewObject);
+            webViewObject.IsVisible = false;
             OnAvatarCreated?.Invoke(message);
         }
     }
@@ -115,6 +136,8 @@ public class Webview
                     }
                 }
             }
+
+            document.getElementById('loading').innerHTML = '<center>Failed to load on current browser.<br/>Please update your Operating System.</center>'
         ");
     }
 }
